@@ -12,6 +12,15 @@ export interface AuthorSearchResponse extends DsResponse {
   authors: Author[];
 }
 
+export interface AuthorSearchStringQuery {
+  query: string,
+}
+
+export type AuthorSearchRequestBody = AuthorSearchStringQuery | AuthorSearchIdQuery;
+
+export interface AuthorSearchIdQuery {
+  authorIds: string[];
+}
 export interface AuthorSearchFailure extends DsError {
   reason: 'invalid-search';
   message: string;
@@ -25,8 +34,8 @@ export interface AuthorSearchFailure extends DsError {
  * Its successful response type is AuthorSearchResponse.
  * Its failure response type is AuthorSearchFailure.
  */
-export class AuthorSearchRequest extends DsRequest<null, AuthorSearchResponse, AuthorSearchFailure> {
-  constructor(public query: string) {
-    super('GET', `/authors?q=${encodeURIComponent(query)}`, null);
+export class AuthorSearchRequest extends DsRequest<AuthorSearchRequestBody, AuthorSearchResponse, AuthorSearchFailure> {
+  constructor(public body: AuthorSearchRequestBody) {
+    super('POST', `/authors`, body);
   }
 }
